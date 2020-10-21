@@ -25,7 +25,6 @@ readdir(path + '/router', (err, routers) => {
     if (!existsSync(path + '/router/' + router + '/index.js')) return
     router = require(path + '/router/' + router + '/index')
 
-    if (router.static) app.use(router._root + router.static, express.static(path + '/router/' + router._root + router.static))
     if (router._cors) app.use(router._root, cors())
     if (router._parser) {
       router._parser.forEach((p) => {
@@ -37,8 +36,9 @@ readdir(path + '/router', (err, routers) => {
         }
       })
     }
-
     const rapp = new Rapp(router._root, router._host)
     router.ready(rapp, socket)
+    
+    if (router.static) app.use(router._root + router.static, express.static(path + '/router/' + router._root + router.static))
   })
 })
